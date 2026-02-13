@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PDF Role Task Analyzer</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+</head>
+<body>
+  <main class="container">
+    <h1>PDF Role + Task Analyzer</h1>
+    <p class="lead">Upload a PDF, define your role, and type the task. The app analyzes the PDF text and responds according to your instruction.</p>
+
+    <form method="post" enctype="multipart/form-data" class="card">
+      <label for="role">Your role</label>
+      <input id="role" name="role" type="text" placeholder="e.g., Legal Analyst" required />
+
+      <label for="task">Task</label>
+      <textarea id="task" name="task" rows="3" placeholder="e.g., Identify compliance risks and summarize obligations" required></textarea>
+
+      <label for="pdf">PDF file</label>
+      <input id="pdf" name="pdf" type="file" accept="application/pdf" required />
+
+      <button type="submit">Analyze PDF</button>
+    </form>
+
+    {% if error %}
+      <section class="card error">{{ error }}</section>
+    {% endif %}
+
+    {% if result %}
+      <section class="card">
+        <h2>Analysis Summary</h2>
+        <ul>
+          <li><strong>Role:</strong> {{ result.role }}</li>
+          <li><strong>Task:</strong> {{ result.task }}</li>
+          <li><strong>Pages:</strong> {{ result.page_count }}</li>
+          <li><strong>Word count:</strong> {{ result.word_count }}</li>
+          <li><strong>Character count:</strong> {{ result.character_count }}</li>
+        </ul>
+
+        <h3>Detected key points</h3>
+        <ul>
+          {% for point in result.key_points %}
+            <li>{{ point }}</li>
+          {% else %}
+            <li>No long sentences were detected.</li>
+          {% endfor %}
+        </ul>
+
+        <h3>Role-task response</h3>
+        <pre>{{ result.response }}</pre>
+      </section>
+    {% endif %}
+  </main>
+</body>
+</html>
